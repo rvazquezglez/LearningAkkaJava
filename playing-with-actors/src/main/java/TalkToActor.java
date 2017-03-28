@@ -131,7 +131,6 @@ public class TalkToActor {
 
         // Checker Messages
         private static class CheckUser implements CheckerMsg {
-
             private final User user;
 
             CheckUser(User user) {
@@ -160,7 +159,6 @@ public class TalkToActor {
         }
 
         // Checker Responses
-
         private interface CheckerResponse {
         }
 
@@ -219,11 +217,9 @@ public class TalkToActor {
                 return Objects.hash(user);
             }
         }
-
     }
 
     private static class Recorder extends AbstractActor {
-
         private final ActorRef checker;
         private final ActorRef storage;
 
@@ -248,7 +244,7 @@ public class TalkToActor {
                             LOGGER.info("Recorder: Received white user {}, saving", checkerResponse);
                             this.storage.tell(new Storage.AddUser(((Checker.WhiteUser) checkerResponse).user), self());
                         } else if (checkerResponse instanceof Checker.BlackUser) {
-                            LOGGER.info("Recorder: Received  user in the black list {}", checkerResponse);
+                            LOGGER.info("Recorder: Received  user in the black list {}, ignoring", checkerResponse);
                         } else {
                             LOGGER.info("Recorder: Received unknown checker response {}", checkerResponse);
                         }
@@ -256,7 +252,6 @@ public class TalkToActor {
                     },
                     globalExecutionContext());
         }
-
 
         private interface RecorderMsg {
         }
@@ -313,10 +308,11 @@ public class TalkToActor {
         //send NewUser Message to Recorder
         recorder.tell(new Recorder.NewUser(new User("Jon", "jon@packt.com")), ActorRef.noSender());
 
+        //send a NewUser Message with a user in black list to Recorder
+        recorder.tell(new Recorder.NewUser(new User("Adam", "adam@mail.com")), ActorRef.noSender());
+
         Thread.sleep(100);
 
         system.terminate();
     }
-
-
 }
