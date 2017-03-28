@@ -7,8 +7,10 @@ import akka.japi.pf.ReceiveBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 import static akka.pattern.Patterns.ask;
 import static scala.compat.java8.FutureConverters.globalExecutionContext;
@@ -54,14 +56,14 @@ public class TalkToActor {
 
         Storage() {
             receive(ReceiveBuilder
-                    .match(AddUser.class,
-                            addUser -> addUser.user != null,
-                            addUserMsg -> {
-                                LOGGER.info("Storage: {} added", addUserMsg.user);
-                                users.add(addUserMsg.user);
-                            })
-                    .matchAny(msg -> LOGGER.info("Storage: Unknown message received {}", msg))
-                    .build());
+                .match(AddUser.class,
+                        addUser -> addUser.user != null,
+                        addUserMsg -> {
+                            LOGGER.info("Storage: {} added", addUserMsg.user);
+                            users.add(addUserMsg.user);
+                        })
+                .matchAny(msg -> LOGGER.info("Storage: Unknown message received {}", msg))
+                .build());
         }
 
         private interface StorageMsg {
@@ -101,27 +103,26 @@ public class TalkToActor {
         private final List<User> blackList = Collections.singletonList(new User("Adam", "adam@mail.com"));
 
         public Checker() {
-            receive(
-                    ReceiveBuilder
-                            .match(
-                                    CheckUser.class,
-                                    checkUserMsg -> checkUserMsg.user != null
-                                            && blackList.contains(checkUserMsg.user),
-                                    checkUserMsg -> {
-                                        LOGGER.info("Checker: {} is in the blacklist", checkUserMsg.user);
-                                        sender().tell(new BlackUser(checkUserMsg.user), self());
-                                    }
-                            )
-                            .match(
-                                    CheckUser.class,
-                                    checkUser -> checkUser.user != null,
-                                    checkUserMsg -> {
-                                        LOGGER.info("Checker: {} is not in the blacklist", checkUserMsg.user);
-                                        sender().tell(new WhiteUser(checkUserMsg.user), self());
-                                    }
-                            )
-                            .matchAny(msg -> LOGGER.info("Checker: Unknown message received {}", msg))
-                            .build()
+            receive(ReceiveBuilder
+                .match(
+                    CheckUser.class,
+                    checkUserMsg -> checkUserMsg.user != null
+                            && blackList.contains(checkUserMsg.user),
+                    checkUserMsg -> {
+                        LOGGER.info("Checker: {} is in the blacklist", checkUserMsg.user);
+                        sender().tell(new BlackUser(checkUserMsg.user), self());
+                    }
+                )
+                .match(
+                    CheckUser.class,
+                    checkUser -> checkUser.user != null,
+                    checkUserMsg -> {
+                        LOGGER.info("Checker: {} is not in the blacklist", checkUserMsg.user);
+                        sender().tell(new WhiteUser(checkUserMsg.user), self());
+                    }
+                )
+                .matchAny(msg -> LOGGER.info("Checker: Unknown message received {}", msg))
+                .build()
             );
         }
 
