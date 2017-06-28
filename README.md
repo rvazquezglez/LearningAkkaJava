@@ -7,6 +7,7 @@ This repo is inspired in [Salma Kather's learning Akka repository](https://githu
 *  2.4 Playing with Actors [Java](playing-with-actors/src/main/java/TalkToActor.java) [Scala](https://github.com/SalmaKhater/Learning-Akka/blob/master/playing-with-actors/src/main/scala/TalkToActor.scala)
 *  2.5 Supervision [Java](playing-with-actors/src/main/java/Supervision.java) [Scala](https://github.com/SalmaKhater/Learning-Akka/blob/master/playing-with-actors/src/main/scala/Supervision.scala)
 *  2.5 Monitoring [Java](playing-with-actors/src/main/java/Monitoring.java) [Scala](https://github.com/SalmaKhater/Learning-Akka/blob/master/playing-with-actors/src/main/scala/Monitoring.scala)
+*  3.1 Actor paths and actor selection [Java](actor-paths/src/main/java/) [Scala](https://github.com/SalmaKhater/Learning-Akka/blob/master/actor-paths/src/main/scala/)
 
 
 
